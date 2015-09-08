@@ -394,6 +394,21 @@ def ldap_has_samba_schema():
     return has_samba_schema
 
 
+def ldap_anonymous_bind():
+    from freenasUI.directoryservice.models import LDAP
+
+    anonymous_bind = False
+    try:
+        ldap = LDAP.objects.all()[0]
+        if ldap.ldap_anonbind:
+            anonymous_bind = True
+
+    except: 
+        anonymous_bind = False
+
+    return anonymous_bind
+
+
 def ldap_objects():
     from freenasUI.directoryservice.models import LDAP
 
@@ -428,20 +443,19 @@ def activedirectory_has_unix_extensions():
     return ad_unix_extensions
 
 
-def activedirectory_has_keytab():
+def activedirectory_has_principal():
     from freenasUI.directoryservice.models import ActiveDirectory
 
-    ad_has_keytab = False
+    ad_has_principal = False
     try:
         ad = ActiveDirectory.objects.all()[0]
-        if ad.ad_kerberos_keytab:
-            ad_has_keytab = True
+        if ad.ad_kerberos_principal:
+            ad_has_principal = True
 
     except Exception as e:
-        print "XXX: e = ", e
-        ad_has_keytab = False
+        ad_has_principal = False
 
-    return ad_has_keytab
+    return ad_has_principal
 
 
 def activedirectory_objects():

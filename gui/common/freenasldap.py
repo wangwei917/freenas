@@ -134,6 +134,7 @@ class FreeNAS_LDAP_Directory(object):
         self.binddn = kwargs.get('binddn', None)
         self.bindpw = kwargs.get('bindpw', None)
         self.basedn = kwargs.get('basedn', None)
+        self.anonbind = kwargs.get('anonbind', False)
 
         self.ssl = FREENAS_LDAP_NOSSL
         if kwargs.has_key('ssl') and kwargs['ssl'] is not None:
@@ -287,7 +288,9 @@ class FreeNAS_LDAP_Directory(object):
                     raise e
 
             bind_method = None
-            if self.flags & FLAGS_SASL_GSSAPI:
+            if self.anonbind:
+                bind_method = self._do_anonymous_bind
+            elif self.flags & FLAGS_SASL_GSSAPI:
                 bind_method = self._do_sasl_gssapi_bind
             elif self.binddn and self.bindpw:
                 bind_method = self._do_authenticated_bind 
@@ -644,9 +647,6 @@ class FreeNAS_LDAP_Base(FreeNAS_LDAP_Directory):
         return principal
 
     def get_kerberos_ticket(self):
-        isopen = self._isopen
-        self.open()
-
         res = False 
         kinit = False
 
@@ -708,9 +708,6 @@ class FreeNAS_LDAP_Base(FreeNAS_LDAP_Directory):
 
                 time.sleep(1)
                 i += 1
-
-        if not isopen:
-            self.close()
 
         return res
 

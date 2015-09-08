@@ -27,7 +27,8 @@ from freenasUI.common.ssl import (
 )
 from freenasUI.common.system import (
     activedirectory_enabled,
-    ldap_enabled
+    ldap_enabled,
+    ldap_anonymous_bind
 )
 from freenasUI.directoryservice.models import (
     ActiveDirectory,
@@ -716,11 +717,12 @@ def add_ldap_section(sc):
     ldap_save = ldap
     ldap = FreeNAS_LDAP(flags=FLAGS_DBINIT)
 
-    if ldap.keytab_name and ldap.kerberos_realm:
+    if ldap.keytab_file and ldap.keytab_principal:
         ldap_section.auth_provider = 'krb5'
         ldap_section.chpass_provider = 'krb5'
         ldap_section.ldap_sasl_mech = 'GSSAPI'
         ldap_section.ldap_sasl_authid = ldap.keytab_principal
+        ldap_section.ldap_krb5_keytab = ldap.keytab_file
         ldap_section.krb5_server = ldap.krb_kdc
         ldap_section.krb5_realm = ldap.krb_realm
         ldap_section.krb5_canonicalize = 'false'
@@ -790,7 +792,7 @@ def add_activedirectory_section(sc):
 
     __, hostname, __ = os.uname()[0:3]
 
-    if ad.keytab_name and ad.kerberos_realm and os.path.exists(ad.keytab_file):
+    if ad.keytab_file and ad.keytab_principal:
         use_ad_provider = True
 
     if use_ad_provider:
@@ -888,6 +890,9 @@ def get_directoryservice_cookie():
 
 def main():
     sssd_conf = None
+
+    if ldap_enabled() and ldap_anonymous_bind():
+        sys.exit(1)
 
     sssd_setup()
     if os.path.exists(SSSD_CONFIGFILE):

@@ -225,7 +225,7 @@ The following mailing lists are available:
 Videos
 ------
 
-A series of instructional videos are available for FreeNAS® 9.3. They include:
+A series of instructional videos are available for FreeNAS®. They include:
 
 * `Changes in FreeNAS® 9.3 <https://www.youtube.com/watch?v=weKWqmbWdR4>`_
 
@@ -244,6 +244,8 @@ A series of instructional videos are available for FreeNAS® 9.3. They include:
 * `Install Murmur (Mumble server) on FreeNAS/FreeBSD <https://www.youtube.com/watch?v=aAeZRNfarJc>`_
 
 * `FreeNAS 9.3 - First Time Setup Wizard <https://www.youtube.com/watch?v=isvHJ51YRBk>`_
+
+* `FreeNAS® 9.3 Permissions Overview <https://www.youtube.com/watch?v=jpi_6OJwzJE>`_
 
 .. index:: Professional Support
 .. _Professional Support:
